@@ -1,0 +1,37 @@
+#   ________   ________  ---  -  ___       __    ________   ________   ________   ________
+#  |\   ____\ |\   __  \        |\  \     |\  \ |\   __  \ |\   __  \ |\   __  \ |\   ____\
+#  \ \  \___| \ \  \|\  \ -- -  \ \  \    \ \  \\ \  \|\  \\ \  \|\  \\ \  \|\  \\ \  \___|_
+#   \ \  \  ___\ \  \\\  \   -   \ \  \  __\ \  \\ \   __  \\ \   _  _\\ \   ____\\ \_____  \
+#    \ \  \|\  \\ \  \\\  \--   - \ \  \|\__\_\  \\ \  \ \  \\ \  \\  \|\ \  \___|-\|____|\  \
+#     \ \_______\\ \_______\ -- -  \ \____________\\ \__\ \__\\ \__\\ _\ \ \__\  -   ____\_\  \
+#      \|_______| \|_______|    -   \|____________| \|__|\|__| \|__|\|__| \|__|   --|\_________\
+#  ---           ------              -          -        --          -          -   \|_________|
+#        - By: Hempfest --    ---           ---    -       ----                --      --
+#          Version: ?.?.?   --      --------          ---          --      -          -----
+#--------------------------------------------------------------------------------------------------#
+Options:
+  ## Change the prefix used for all responses.
+  prefix: '&8(&f&lGO&8)'
+
+Messages:
+  ## Change the warp message for /go
+  private-teleport: '&a&oTeleporting to warp &f&l%s'
+
+  ## Change the creation message for /go
+  private-set: '&a&oWarp &f&l%s &a&ohas been set'
+
+  ## Change the deletion message for /go
+  private-deleted: '&c&oWarp &f&l%s &c&ohas been deleted'
+
+  ## Change the message when a warp location is update with /go
+  private-updated: '&e&oWarp &f&l%s &e&ohas been updated.'
+
+  ## Change the message when a warp isnt found.
+  private-not-found: '&c&oWarp &f&l%s &c&onot found.'
+
+Gui:
+  private-list-title: '&7&oPrivate homes &f| &bClick to warp'
+  private-list-icon: gravel
+
+## DO NOT EDIT BELOW
+Version: 1.0.0

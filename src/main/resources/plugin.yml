@@ -1,0 +1,7 @@
+name: hEssentialsWarps
+version: ${project.version}
+main: com.youtube.hempfest.warps.HempfestWarps
+api-version: 1.16
+depend: [ HempCore ]
+authors: [ Hempfest ]
+description: A plugin providing personal player warps.
