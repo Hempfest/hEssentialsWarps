@@ -7,6 +7,7 @@ import com.youtube.hempfest.hempcore.gui.Pagination;
 import com.youtube.hempfest.hempcore.library.Items;
 import com.youtube.hempfest.warps.HempfestWarps;
 import com.youtube.hempfest.warps.PrivateWarp;
+import com.youtube.hempfest.warps.PublicWarp;
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,15 +18,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-public class InventoryHomes extends Pagination {
+public class InventoryWarps extends Pagination {
 
-	public InventoryHomes(GuiLibrary guiLibrary) {
+	public InventoryWarps(GuiLibrary guiLibrary) {
 		super(guiLibrary);
 	}
 
 	@Override
 	public String getMenuName() {
-		return new ColoredString(HempfestWarps.getGuiString("private-list-title"), ColoredString.ColorType.HEX).toString();
+		return new ColoredString(HempfestWarps.getGuiString("public-list-title"), ColoredString.ColorType.HEX).toString();
 	}
 
 	@Override
@@ -37,12 +38,7 @@ public class InventoryHomes extends Pagination {
 	public void handleMenu(InventoryClickEvent e) {
 	Player p = (Player) e.getWhoClicked();
 	Material mat = e.getCurrentItem().getType();
-		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(p.getUniqueId()));
-		try {
-			homes.addAll(PrivateWarp.sharedHomeNames(p.getUniqueId()));
-		} catch (NullPointerException ignored) {
-
-		}
+	ArrayList<String> warps = new ArrayList<>(PublicWarp.allWarps());
 	switch (mat) {
 		case BARRIER:
 			p.closeInventory();
@@ -57,7 +53,7 @@ public class InventoryHomes extends Pagination {
 				}
 			} else if (ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName())
 					.equalsIgnoreCase("Right")) {
-				if (!((index + 1) >= homes.size())) {
+				if (!((index + 1) >= warps.size())) {
 					page = page + 1;
 					super.open();
 				} else {
@@ -66,36 +62,31 @@ public class InventoryHomes extends Pagination {
 			}
 			break;
 	}
-		Material select = Items.getMaterial(HempfestWarps.getGuiString("private-list-icon"));
+		Material select = Items.getMaterial(HempfestWarps.getGuiString("public-list-icon"));
 		if (select == null) {
 			select = Material.PAPER;
 		}
-		String home = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(HempCore.getInstance(), "home"), PersistentDataType.STRING);
+		String warp = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(HempCore.getInstance(), "warp"), PersistentDataType.STRING);
 	if (mat.equals(select)) {
-		Bukkit.dispatchCommand(p, "go " + home);
+		Bukkit.dispatchCommand(p, "warp " + warp);
 	}
 	}
 
 	@Override
 	public void setMenuItems() {
 		addMenuBorder();
-		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(guiLibrary.getUUID()));
-		try {
-			homes.addAll(PrivateWarp.sharedHomeNames(guiLibrary.getUUID()));
-		} catch (NullPointerException ignored) {
-
-		}
-		if (homes != null && !homes.isEmpty()) {
+		ArrayList<String> warps = new ArrayList<>(PublicWarp.allWarps());
+		if (warps != null && !warps.isEmpty()) {
 			for (int i = 0; i < getMaxItemsPerPage(); i++) {
 				index = getMaxItemsPerPage() * page + i;
-				if (index >= homes.size())
+				if (index >= warps.size())
 					break;
-				if (homes.get(index) != null) {
-					Material mat = Items.getMaterial(HempfestWarps.getGuiString("private-list-icon"));
+				if (warps.get(index) != null) {
+					Material mat = Items.getMaterial(HempfestWarps.getGuiString("public-list-icon"));
 					if (mat == null) {
 						mat = Material.PAPER;
 					}
-				ItemStack home = makePersistentItem(mat, "&b&oGoto &f&o" + homes.get(index), "home", homes.get(index), "", "&7&oClick to warp.");
+				ItemStack home = makePersistentItem(mat, "&b&oGoto &f&o" + warps.get(index), "warp", warps.get(index), "", "&7&oClick to warp.");
 				inventory.addItem(home);
 				}
 			}

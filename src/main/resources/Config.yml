@@ -14,6 +14,21 @@ Options:
   prefix: '&8(&f&lGO&8)'
 
 Messages:
+  ## Change the warp message for /warp
+  public-teleport: '&a&oTeleporting to warp &f&l%s'
+
+  ## Change the creation message for /warp
+  public-set: '&a&l&oWarp &f&l%s &a&l&ohas been set'
+
+  ## Change the deletion message for /warp
+  public-deleted: '&c&l&oWarp &f&l%s &c&l&ohas been deleted'
+
+  ## Change the message when a warp location is update with /warp
+  public-updated: '&e&l&oWarp &f&l%s &e&l&ohas been updated.'
+
+  ## Change the message when a warp isn't found.
+  public-not-found: '&c&oWarp &f&l%s &c&onot found.'
+
   ## Change the warp message for /go
   private-teleport: '&a&oTeleporting to warp &f&l%s'
 
@@ -23,15 +38,30 @@ Messages:
   ## Change the deletion message for /go
   private-deleted: '&c&oWarp &f&l%s &c&ohas been deleted'
 
+  ## Message sent when you share your home with another player.
+  private-shared: '&3&oWarp &f&l%s&3&o has been shared with &f&l%s'
+
+  ## Message sent when you take your homes access from another player.
+  private-taken: '&3&oWarp &f&l%s&3&o has been taken from &f&l%s'
+
   ## Change the message when a warp location is update with /go
   private-updated: '&e&oWarp &f&l%s &e&ohas been updated.'
 
-  ## Change the message when a warp isnt found.
+  ## Change the message when a warp isn't found.
   private-not-found: '&c&oWarp &f&l%s &c&onot found.'
 
 Gui:
-  private-list-title: '&7&oPrivate homes &f| &bClick to warp'
+  ## Change the /go list gui menu title. (HEX SUPPORTED w/ & symbol)
+  private-list-title: '&5&oPrivate homes &f| &bClick to warp'
+
+  ## Change the icon type representing the players private homes. (Must represent a minecraft:tag item excluding the prefix)
   private-list-icon: gravel
+
+  ## Change the /warps gui menu title. (HEX SUPPORTED w/ & symbol)
+  public-list-title: '&5&l&oPublic warps &f| &2Click to warp'
+
+  ## Change the icon type representing the public warps. (Must represent a minecraft:tag item excluding the prefix)
+  public-list-icon: oakplanks
 
 ## DO NOT EDIT BELOW
 Version: 1.0.0
