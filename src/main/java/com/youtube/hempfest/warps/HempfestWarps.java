@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class HempfestWarps extends JavaPlugin implements Listener {
 
 	private static HempfestWarps instance;
-	private static Config main = new Config("Config", "Configuration");
+	private static Config main = Config.get("Config", "Configuration");
 	public static HashMap<UUID, Boolean> teleporting = new HashMap<>();
 
 	@Override
@@ -61,7 +61,7 @@ public final class HempfestWarps extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void joinLog(PlayerJoinEvent e) {
-		Config main = new Config(e.getPlayer().getUniqueId().toString(), "Private");
+		Config main = Config.get(e.getPlayer().getUniqueId().toString(), "Private");
 		if (!main.exists()) {
 			main.getConfig().createSection("Owned");
 			main.saveConfig();

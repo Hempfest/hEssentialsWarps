@@ -29,7 +29,7 @@ public class PublicWarp implements Warp {
 
 	@Override
 	public Location getLocation() throws IOException, ClassNotFoundException {
-		Config main = new Config(warpName, "Public");
+		Config main = Config.get(warpName, "Public");
 		return (Location) new HFEncoded(main.getConfig().getString("location")).deserialized();
 	}
 
@@ -40,26 +40,26 @@ public class PublicWarp implements Warp {
 
 	@Override
 	public HUID getId() throws IOException, ClassNotFoundException {
-		Config main = new Config(warpName, "Public");
+		Config main = Config.get(warpName, "Public");
 		return ((HUID) new HFEncoded(main.getConfig().getString("id")).deserialized());
 	}
 
 	public void create() throws IOException {
-		Config main = new Config(warpName, "Public");
+		Config main = Config.get(warpName, "Public");
 		main.getConfig().set("location", new HFEncoded(loc).serialize());
 		main.getConfig().set("id", new HFEncoded(HUID.randomID()).serialize());
 		main.saveConfig();
 	}
 
 	public void delete() {
-		Config main = new Config(warpName, "Public");
+		Config main = Config.get(warpName, "Public");
 		if (main.exists()) {
 			main.delete();
 		}
 	}
 
 	public static List<String> allWarps() {
-		Config main = new Config(null, "Public");
+		Config main = Config.get("Test", "Public");
 		List<String> array = new ArrayList<>();
 		for (File f : Objects.requireNonNull(main.getDataFolder().listFiles())) {
 			String name = f.getName().replace(".yml", "");

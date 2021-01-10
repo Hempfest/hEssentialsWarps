@@ -25,7 +25,7 @@ public class InventoryHomes extends Pagination {
 
 	@Override
 	public String getMenuName() {
-		return new ColoredString(HempfestWarps.getGuiString("private-list-title"), ColoredString.ColorType.HEX).toString();
+		return new ColoredString(String.format(HempfestWarps.getGuiString("private-list-title"), (PrivateWarp.ownedHomeNames(guiLibrary.getUUID()).size() + PrivateWarp.sharedHomeNames(guiLibrary.getUUID()).size()), PrivateWarp.maxWarps(Bukkit.getPlayer(guiLibrary.getUUID()))), ColoredString.ColorType.HEX).toString();
 	}
 
 	@Override

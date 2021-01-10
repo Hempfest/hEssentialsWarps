@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
@@ -28,7 +30,15 @@ public class CommandGo extends BukkitCommand {
 		setAliases(Arrays.asList("hgo", "home"));
 	}
 
-
+	private OfflinePlayer getUser(String playerName) {
+		OfflinePlayer result = null;
+		for (String id : PrivateWarp.allPlayers()) {
+			if (Bukkit.getOfflinePlayer(UUID.fromString(id)).getName().equals(playerName)) {
+				result = Bukkit.getOfflinePlayer(UUID.fromString(id));
+			}
+		}
+		return result;
+	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
@@ -56,7 +66,7 @@ public class CommandGo extends BukkitCommand {
 		if (length == 1) {
 			if (args[0].equalsIgnoreCase("reload")) {
 				if (p.hasPermission("hwarps.reload")) {
-					Config main = new Config("Config", "Configuration");
+					Config main = Config.get("Config", "Configuration");
 					main.reload();
 					p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&b&oConfiguration v&f" + main.getConfig().getString("Version") + " &b&oreloaded.", ColoredString.ColorType.HEX).toString());
 					return true;
@@ -157,7 +167,7 @@ public class CommandGo extends BukkitCommand {
 			if (args[0].equalsIgnoreCase("list")) {
 				String warp = args[1];
 				PrivateWarp home = new PrivateWarp(warp, p.getUniqueId());
-				Config main = new Config(p.getUniqueId().toString(), "Private");
+				Config main = Config.get(p.getUniqueId().toString(), "Private");
 				if (!PrivateWarp.ownedHomeNames(p.getUniqueId()).contains(warp)) {
 					p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-not-found"), args[1]));
 					return true;
@@ -166,7 +176,7 @@ public class CommandGo extends BukkitCommand {
 					HomeInheritance hi = (HomeInheritance) new HFEncoded(main.getConfig().getString("Shared." + home.getId())).deserialized();
 					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&6&oCurrent users you share &f&l" + warp + " &6&owith: &r&o" + hi.getUsers().toString(), ColoredString.ColorType.HEX).toString());
 				} catch (NullPointerException | IOException | ClassNotFoundException e) {
-					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYou either don't own this warp or it doesn't exist.", ColoredString.ColorType.HEX).toString());
+					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYou either &fA. &c&odon't own this warp &fB. &c&owarp doesn't exist or &fC. &c&oYou don't share it.", ColoredString.ColorType.HEX).toString());
 				}
 			}
 			return true;
@@ -177,10 +187,10 @@ public class CommandGo extends BukkitCommand {
 				String player = args[1];
 				String warp = args[2];
 				PrivateWarp home = new PrivateWarp(warp, p.getUniqueId());
-				Config main = new Config(p.getUniqueId().toString(), "Private");
+				Config main = Config.get(p.getUniqueId().toString(), "Private");
 				try {
 					if (!PrivateWarp.ownedHomeNames(p.getUniqueId()).contains(warp)) {
-						p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-not-found"), args[0]));
+						p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-not-found"), warp));
 						return true;
 					}
 					HomeInheritance hi = (HomeInheritance) new HFEncoded(main.getConfig().getString("Shared." + home.getId())).deserialized();
@@ -188,7 +198,7 @@ public class CommandGo extends BukkitCommand {
 						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&a&oPlayer already has access to this warp.", ColoredString.ColorType.HEX).toString());
 						return true;
 					}
-					Player target = Bukkit.getPlayer(player);
+					OfflinePlayer target = getUser(player);
 					if (target != null) {
 						PrivateWarp targetClone = new PrivateWarp(warp, target.getUniqueId(), home.getId());
 						targetClone.create(home.getLocation());
@@ -208,8 +218,8 @@ public class CommandGo extends BukkitCommand {
 					try {
 						HomeInheritance homeInheritance = new HomeInheritance(home.getId());
 						Player target = Bukkit.getPlayer(player);
-						homeInheritance.add(Bukkit.getPlayer(player).getUniqueId());
 						if (target != null) {
+							homeInheritance.add(Bukkit.getPlayer(player).getUniqueId());
 							PrivateWarp targetClone = new PrivateWarp(warp, target.getUniqueId(), home.getId());
 							targetClone.create(home.getLocation());
 							homeInheritance.add(target.getUniqueId());
@@ -234,7 +244,7 @@ public class CommandGo extends BukkitCommand {
 				String player = args[1];
 				String warp = args[2];
 				PrivateWarp home = new PrivateWarp(warp, p.getUniqueId());
-				Config main = new Config(p.getUniqueId().toString(), "Private");
+				Config main = Config.get(p.getUniqueId().toString(), "Private");
 				try {
 					if (!PrivateWarp.ownedHomeNames(p.getUniqueId()).contains(warp)) {
 						p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-not-found"), args[0]));
@@ -246,9 +256,9 @@ public class CommandGo extends BukkitCommand {
 
 						return true;
 					}
-					Player target = Bukkit.getPlayer(player);
+					OfflinePlayer target = getUser(player);
 					if (target != null) {
-						Config targetC = new Config(target.getUniqueId().toString(), "Private");
+						Config targetC = Config.get(target.getUniqueId().toString(), "Private");
 						targetC.getConfig().set("Shared." + warp, null);
 						targetC.saveConfig();
 						hi.remove(target.getUniqueId());

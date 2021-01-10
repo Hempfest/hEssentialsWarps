@@ -8,7 +8,7 @@ public interface Warp {
 
 	public Location getLocation() throws IOException, ClassNotFoundException;
 
-	public String getOwner() throws IOException, ClassNotFoundException;
+	public String getOwner();
 
 	public HUID getId() throws IOException, ClassNotFoundException;
 

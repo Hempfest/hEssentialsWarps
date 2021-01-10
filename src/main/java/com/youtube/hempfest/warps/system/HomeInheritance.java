@@ -11,9 +11,9 @@ import org.bukkit.Bukkit;
 
 public class HomeInheritance implements Serializable {
 
-	private List<UUID> users = new ArrayList<>();
+	private final List<UUID> users = new ArrayList<>();
 
-	private HUID warpId;
+	private final HUID warpId;
 
 	public HomeInheritance(HUID warpId) {
 		this.warpId = warpId;
@@ -40,9 +40,7 @@ public class HomeInheritance implements Serializable {
 	}
 
 	public void commit(Config file) throws IOException {
-		HomeInheritance inh = new HomeInheritance(warpId);
-		inh.input(users);
-		file.getConfig().set("Shared." + warpId.toString(), new HFEncoded(inh).serialize());
+		file.getConfig().set("Shared." + warpId.toString(), new HFEncoded(this).serialize());
 		file.saveConfig();
 	}
 
