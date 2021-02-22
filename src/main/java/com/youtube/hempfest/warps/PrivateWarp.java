@@ -1,21 +1,17 @@
 package com.youtube.hempfest.warps;
 
-import com.youtube.hempfest.hempcore.gui.Pagination;
-import com.youtube.hempfest.hempcore.library.HFEncoded;
-import com.youtube.hempfest.hempcore.library.HUID;
+import com.github.sanctum.labyrinth.library.HFEncoded;
+import com.github.sanctum.labyrinth.library.HUID;
 import com.youtube.hempfest.warps.structure.Warp;
 import com.youtube.hempfest.warps.system.Config;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
 public class PrivateWarp implements Warp {
@@ -39,7 +35,7 @@ public class PrivateWarp implements Warp {
 
 	@Override
 	public Location getLocation() throws IOException, ClassNotFoundException {
-		Config main = Config.get(getOwner(), "Private");
+		Config main = Config.get(ownerID.toString(), "Private");
 		return ((Location) new HFEncoded(main.getConfig().getString("Owned." + warpName + ".location")).deserialized());
 	}
 
@@ -68,7 +64,7 @@ public class PrivateWarp implements Warp {
 
 	@Override
 	public HUID getId() throws IOException, ClassNotFoundException {
-		Config main = Config.get(getOwner(), "Private");
+		Config main = Config.get(ownerID.toString(), "Private");
 		return (HUID) new HFEncoded(main.getConfig().getString("Owned." + warpName + ".id")).deserialized();
 	}
 

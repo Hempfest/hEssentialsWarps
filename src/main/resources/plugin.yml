@@ -1,7 +1,7 @@
-name: hEssentialsWarps
-version: ${project.version}
+name: Go
+version: 1.0.0
 main: com.youtube.hempfest.warps.HempfestWarps
 api-version: 1.16
-depend: [ HempCore ]
+depend: [ Labyrinth ]
 authors: [ Hempfest ]
 description: A plugin providing personal player warps.

@@ -8,6 +8,7 @@ import com.github.sanctum.labyrinth.library.Items;
 import com.youtube.hempfest.warps.HempfestWarps;
 import com.youtube.hempfest.warps.PrivateWarp;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,15 +18,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-public class InventoryHomes extends Pagination {
+public class InventoryHomesOther extends Pagination {
 
-	public InventoryHomes(GuiLibrary guiLibrary) {
+	public InventoryHomesOther(GuiLibrary guiLibrary) {
 		super(guiLibrary);
 	}
 
 	@Override
 	public String getMenuName() {
-		return new ColoredString(String.format(HempfestWarps.getGuiString("private-list-title"), (PrivateWarp.ownedHomeNames(guiLibrary.getUUID()).size()), PrivateWarp.maxWarps(Bukkit.getPlayer(guiLibrary.getUUID()))), ColoredString.ColorType.HEX).toString();
+		return new ColoredString(String.format(HempfestWarps.getGuiString("private-list-title"), (PrivateWarp.ownedHomeNames(UUID.fromString(guiLibrary.getData())).size()), PrivateWarp.maxWarps(Bukkit.getPlayer(guiLibrary.getUUID()))), ColoredString.ColorType.HEX).toString();
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class InventoryHomes extends Pagination {
 	public void handleMenu(InventoryClickEvent e) {
 	Player p = (Player) e.getWhoClicked();
 	Material mat = e.getCurrentItem().getType();
-		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(p.getUniqueId()));
+		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(UUID.fromString(guiLibrary.getData())));
 		try {
 			homes.addAll(PrivateWarp.sharedHomeNames(p.getUniqueId()));
 		} catch (NullPointerException ignored) {
@@ -72,16 +73,16 @@ public class InventoryHomes extends Pagination {
 		}
 		String home = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Labyrinth.getInstance(), "home"), PersistentDataType.STRING);
 	if (mat.equals(select)) {
-		Bukkit.dispatchCommand(p, "go " + home);
+		Bukkit.dispatchCommand(p, "goto " + Bukkit.getOfflinePlayer(UUID.fromString(guiLibrary.getData())).getName() + " " + home);
 	}
 	}
 
 	@Override
 	public void setMenuItems() {
 		addMenuBorder();
-		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(guiLibrary.getUUID()));
+		ArrayList<String> homes = new ArrayList<>(PrivateWarp.ownedHomeNames(UUID.fromString(guiLibrary.getData())));
 		try {
-			homes.addAll(PrivateWarp.sharedHomeNames(guiLibrary.getUUID()));
+			homes.addAll(PrivateWarp.sharedHomeNames(UUID.fromString(guiLibrary.getData())));
 		} catch (NullPointerException ignored) {
 
 		}

@@ -1,6 +1,6 @@
 package com.youtube.hempfest.warps.structure;
 
-import com.youtube.hempfest.hempcore.library.HUID;
+import com.github.sanctum.labyrinth.library.HUID;
 import java.io.IOException;
 import org.bukkit.Location;
 

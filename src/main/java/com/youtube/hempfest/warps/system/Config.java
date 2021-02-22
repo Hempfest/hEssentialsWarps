@@ -121,7 +121,7 @@ public class Config {
         File defConfigStream = new File(getDataFolder(), getName() + ".yml");
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         this.fc.setDefaults(defConfig);
-        configs.removeIf(c -> c.getName().equals(n));
+        configs.removeIf(c -> c.equals(this));
     }
 
     public void saveConfig() {

@@ -1,12 +1,11 @@
 package com.youtube.hempfest.warps.gui;
 
-import com.youtube.hempfest.hempcore.HempCore;
-import com.youtube.hempfest.hempcore.formatting.string.ColoredString;
-import com.youtube.hempfest.hempcore.gui.GuiLibrary;
-import com.youtube.hempfest.hempcore.gui.Pagination;
-import com.youtube.hempfest.hempcore.library.Items;
+import com.github.sanctum.labyrinth.Labyrinth;
+import com.github.sanctum.labyrinth.formatting.string.ColoredString;
+import com.github.sanctum.labyrinth.gui.GuiLibrary;
+import com.github.sanctum.labyrinth.gui.Pagination;
+import com.github.sanctum.labyrinth.library.Items;
 import com.youtube.hempfest.warps.HempfestWarps;
-import com.youtube.hempfest.warps.PrivateWarp;
 import com.youtube.hempfest.warps.PublicWarp;
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
@@ -66,10 +65,12 @@ public class InventoryWarps extends Pagination {
 		if (select == null) {
 			select = Material.PAPER;
 		}
-		String warp = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(HempCore.getInstance(), "warp"), PersistentDataType.STRING);
+		String warp = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Labyrinth.getInstance(), "warp"), PersistentDataType.STRING);
 	if (mat.equals(select)) {
 		Bukkit.dispatchCommand(p, "warp " + warp);
+		p.closeInventory();
 	}
+	e.setCancelled(true);
 	}
 
 	@Override

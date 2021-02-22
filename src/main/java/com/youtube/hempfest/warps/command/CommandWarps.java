@@ -1,7 +1,7 @@
 package com.youtube.hempfest.warps.command;
 
-import com.youtube.hempfest.hempcore.HempCore;
-import com.youtube.hempfest.hempcore.gui.GuiLibrary;
+import com.github.sanctum.labyrinth.Labyrinth;
+import com.github.sanctum.labyrinth.gui.GuiLibrary;
 import com.youtube.hempfest.warps.gui.InventoryWarps;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -25,7 +25,7 @@ public class CommandWarps extends BukkitCommand {
 		int length = args.length;
 
 		if (length == 0) {
-			GuiLibrary library = HempCore.guiManager(p);
+			GuiLibrary library = Labyrinth.guiManager(p);
 			new InventoryWarps(library).open();
 			return true;
 		}

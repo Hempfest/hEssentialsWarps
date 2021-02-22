@@ -1,8 +1,7 @@
 package com.youtube.hempfest.warps;
 
-import com.youtube.hempfest.hempcore.command.CommandBuilder;
-import com.youtube.hempfest.hempcore.formatting.string.ColoredString;
-import com.youtube.hempfest.hempcore.gui.Menu;
+import com.github.sanctum.labyrinth.command.CommandBuilder;
+import com.github.sanctum.labyrinth.formatting.string.ColoredString;
 import com.youtube.hempfest.warps.system.Config;
 import java.io.InputStream;
 import java.util.HashMap;

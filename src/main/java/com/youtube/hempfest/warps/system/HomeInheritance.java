@@ -1,7 +1,7 @@
 package com.youtube.hempfest.warps.system;
 
-import com.youtube.hempfest.hempcore.library.HFEncoded;
-import com.youtube.hempfest.hempcore.library.HUID;
+import com.github.sanctum.labyrinth.library.HFEncoded;
+import com.github.sanctum.labyrinth.library.HUID;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;

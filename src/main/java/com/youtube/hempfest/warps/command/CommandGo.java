@@ -1,11 +1,11 @@
 package com.youtube.hempfest.warps.command;
 
-import com.youtube.hempfest.hempcore.HempCore;
-import com.youtube.hempfest.hempcore.formatting.string.ColoredString;
-import com.youtube.hempfest.hempcore.formatting.string.PaginatedAssortment;
-import com.youtube.hempfest.hempcore.gui.GuiLibrary;
-import com.youtube.hempfest.hempcore.library.HFEncoded;
-import com.youtube.hempfest.hempcore.library.HUID;
+import com.github.sanctum.labyrinth.Labyrinth;
+import com.github.sanctum.labyrinth.formatting.string.ColoredString;
+import com.github.sanctum.labyrinth.formatting.string.PaginatedAssortment;
+import com.github.sanctum.labyrinth.gui.GuiLibrary;
+import com.github.sanctum.labyrinth.library.HFEncoded;
+import com.github.sanctum.labyrinth.library.HUID;
 import com.youtube.hempfest.warps.HempfestWarps;
 import com.youtube.hempfest.warps.PrivateWarp;
 import com.youtube.hempfest.warps.gui.InventoryHomes;
@@ -58,7 +58,7 @@ public class CommandGo extends BukkitCommand {
 			assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
 			assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 			assortment.setLinesPerPage(7);
-			assortment.setNavigateCommand("help");
+			assortment.setNavigateCommand("go help");
 			assortment.export(1);
 			return true;
 		}
@@ -73,8 +73,19 @@ public class CommandGo extends BukkitCommand {
 				}
 				return false;
 			}
+			if (args[0].equalsIgnoreCase("help")) {
+				p.sendMessage(" ");
+				List<String> help = new ArrayList<>(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&8&m| |:: &7/&f" + commandLabel + " &7list - View all your current warps", "&8&m| |:: &7/&f" + commandLabel + " &7set <&8warpName&7> - Create a warp in the location you stand.", "&8&m| |:: &7/&f" + commandLabel + " &7delete <&8warpName&7> - Delete a warp you currently own.", "&8&m| |:: &7/&f" + commandLabel + " &7list <&8warpName&7> - List all the users you currently share a warp with.", "&8&m| |:: &7/&f" + commandLabel + " &7add <&8playerName&7> <&8warpName&7> - Share a warp with another player.", "&8&m| |:: &7/&f" + commandLabel + " &7remove <&8playerName&7> <&8warpName&7> - Take access of your home away from a player."));
+				PaginatedAssortment assortment = new PaginatedAssortment(p, help);
+				assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
+				assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+				assortment.setLinesPerPage(7);
+				assortment.setNavigateCommand("go help");
+				assortment.export(1);
+				return true;
+			}
 			if (args[0].equalsIgnoreCase("list")) {
-				GuiLibrary lib = HempCore.guiManager(p);
+				GuiLibrary lib = Labyrinth.guiManager(p);
 				new InventoryHomes(lib).open();
 				return true;
 			}
@@ -114,6 +125,23 @@ public class CommandGo extends BukkitCommand {
 		}
 
 		if (length == 2) {
+			if (args[0].equalsIgnoreCase("help")) {
+				try {
+					int page = Integer.parseInt(args[1]);
+					p.sendMessage(" ");
+					List<String> help = new ArrayList<>(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&8&m| |:: &7/&f" + commandLabel + " &7list - View all your current warps", "&8&m| |:: &7/&f" + commandLabel + " &7set <&8warpName&7> - Create a warp in the location you stand.", "&8&m| |:: &7/&f" + commandLabel + " &7delete <&8warpName&7> - Delete a warp you currently own.", "&8&m| |:: &7/&f" + commandLabel + " &7list <&8warpName&7> - List all the users you currently share a warp with.", "&8&m| |:: &7/&f" + commandLabel + " &7add <&8playerName&7> <&8warpName&7> - Share a warp with another player.", "&8&m| |:: &7/&f" + commandLabel + " &7remove <&8playerName&7> <&8warpName&7> - Take access of your home away from a player."));
+					PaginatedAssortment assortment = new PaginatedAssortment(p, help);
+					assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
+					assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+					assortment.setLinesPerPage(7);
+					assortment.setNavigateCommand("go help");
+					assortment.export(page);
+				} catch (NumberFormatException e) {
+					p.sendMessage(HempfestWarps.getPrefix() + " Invalid page number.");
+					return true;
+				}
+				return true;
+			}
 			if (args[0].equalsIgnoreCase("set")) {
 				try {
 					if (PrivateWarp.ownedHomeNames(p.getUniqueId()).contains(args[1])) {
@@ -217,9 +245,8 @@ public class CommandGo extends BukkitCommand {
 				} catch (NullPointerException | IOException | ClassNotFoundException e) {
 					try {
 						HomeInheritance homeInheritance = new HomeInheritance(home.getId());
-						Player target = Bukkit.getPlayer(player);
+						OfflinePlayer target = getUser(player);
 						if (target != null) {
-							homeInheritance.add(Bukkit.getPlayer(player).getUniqueId());
 							PrivateWarp targetClone = new PrivateWarp(warp, target.getUniqueId(), home.getId());
 							targetClone.create(home.getLocation());
 							homeInheritance.add(target.getUniqueId());
