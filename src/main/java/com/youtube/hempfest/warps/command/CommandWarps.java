@@ -1,8 +1,6 @@
 package com.youtube.hempfest.warps.command;
 
-import com.github.sanctum.labyrinth.Labyrinth;
-import com.github.sanctum.labyrinth.gui.GuiLibrary;
-import com.youtube.hempfest.warps.gui.InventoryWarps;
+import com.youtube.hempfest.warps.gui.GUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
@@ -25,8 +23,7 @@ public class CommandWarps extends BukkitCommand {
 		int length = args.length;
 
 		if (length == 0) {
-			GuiLibrary library = Labyrinth.guiManager(p);
-			new InventoryWarps(library).open();
+			GUI.select(GUI.MenuType.WARPS).open(p);
 			return true;
 		}
 

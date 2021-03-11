@@ -1,14 +1,12 @@
 package com.youtube.hempfest.warps.command;
 
-import com.github.sanctum.labyrinth.Labyrinth;
 import com.github.sanctum.labyrinth.formatting.string.ColoredString;
 import com.github.sanctum.labyrinth.formatting.string.PaginatedAssortment;
-import com.github.sanctum.labyrinth.gui.GuiLibrary;
 import com.github.sanctum.labyrinth.library.HFEncoded;
 import com.github.sanctum.labyrinth.library.HUID;
 import com.youtube.hempfest.warps.HempfestWarps;
 import com.youtube.hempfest.warps.PrivateWarp;
-import com.youtube.hempfest.warps.gui.InventoryHomes;
+import com.youtube.hempfest.warps.gui.GUI;
 import com.youtube.hempfest.warps.structure.Warp;
 import com.youtube.hempfest.warps.system.Config;
 import com.youtube.hempfest.warps.system.HomeInheritance;
@@ -54,6 +52,9 @@ public class CommandGo extends BukkitCommand {
 		if (length == 0) {
 			p.sendMessage(" ");
 			List<String> help = new ArrayList<>(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&8&m| |:: &7/&f" + commandLabel + " &7list - View all your current warps", "&8&m| |:: &7/&f" + commandLabel + " &7set <&8warpName&7> - Create a warp in the location you stand.", "&8&m| |:: &7/&f" + commandLabel + " &7delete <&8warpName&7> - Delete a warp you currently own.", "&8&m| |:: &7/&f" + commandLabel + " &7list <&8warpName&7> - List all the users you currently share a warp with.", "&8&m| |:: &7/&f" + commandLabel + " &7add <&8playerName&7> <&8warpName&7> - Share a warp with another player.", "&8&m| |:: &7/&f" + commandLabel + " &7remove <&8playerName&7> <&8warpName&7> - Take access of your home away from a player."));
+			if (p.isOp()) {
+				help.addAll(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&e&m| |:: &7/&f" + commandLabel + " &7reload - Reload configuration changes", "&e&m| |:: &7/&fgoto &7<playerName> <warpName> - Warp to a specified players home.", "&e&m| |:: &7/&fshowhomes &7<playerName> - List a specified players homes."));
+			}
 			PaginatedAssortment assortment = new PaginatedAssortment(p, help);
 			assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
 			assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
@@ -76,6 +77,9 @@ public class CommandGo extends BukkitCommand {
 			if (args[0].equalsIgnoreCase("help")) {
 				p.sendMessage(" ");
 				List<String> help = new ArrayList<>(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&8&m| |:: &7/&f" + commandLabel + " &7list - View all your current warps", "&8&m| |:: &7/&f" + commandLabel + " &7set <&8warpName&7> - Create a warp in the location you stand.", "&8&m| |:: &7/&f" + commandLabel + " &7delete <&8warpName&7> - Delete a warp you currently own.", "&8&m| |:: &7/&f" + commandLabel + " &7list <&8warpName&7> - List all the users you currently share a warp with.", "&8&m| |:: &7/&f" + commandLabel + " &7add <&8playerName&7> <&8warpName&7> - Share a warp with another player.", "&8&m| |:: &7/&f" + commandLabel + " &7remove <&8playerName&7> <&8warpName&7> - Take access of your home away from a player."));
+				if (p.isOp()) {
+					help.addAll(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&e&m| |:: &7/&f" + commandLabel + " &7reload - Reload configuration changes", "&e&m| |:: &7/&fgoto &7<playerName> <warpName> - Warp to a specified players home.", "&e&m| |:: &7/&fshowhomes &7<playerName> - List a specified players homes."));
+				}
 				PaginatedAssortment assortment = new PaginatedAssortment(p, help);
 				assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
 				assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
@@ -85,8 +89,7 @@ public class CommandGo extends BukkitCommand {
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("list")) {
-				GuiLibrary lib = Labyrinth.guiManager(p);
-				new InventoryHomes(lib).open();
+				GUI.select(GUI.MenuType.HOMES, p.getUniqueId()).open(p);
 				return true;
 			}
 			PrivateWarp warp = new PrivateWarp(args[0], p.getUniqueId());
@@ -119,7 +122,7 @@ public class CommandGo extends BukkitCommand {
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			p.sendMessage(HempfestWarps.getPrefix() + " " +  String.format(HempfestWarps.getString("private-teleport"), args[0]));
+			p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-teleport"), args[0]));
 
 			return true;
 		}
@@ -130,6 +133,9 @@ public class CommandGo extends BukkitCommand {
 					int page = Integer.parseInt(args[1]);
 					p.sendMessage(" ");
 					List<String> help = new ArrayList<>(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&8&m| |:: &7/&f" + commandLabel + " &7list - View all your current warps", "&8&m| |:: &7/&f" + commandLabel + " &7set <&8warpName&7> - Create a warp in the location you stand.", "&8&m| |:: &7/&f" + commandLabel + " &7delete <&8warpName&7> - Delete a warp you currently own.", "&8&m| |:: &7/&f" + commandLabel + " &7list <&8warpName&7> - List all the users you currently share a warp with.", "&8&m| |:: &7/&f" + commandLabel + " &7add <&8playerName&7> <&8warpName&7> - Share a warp with another player.", "&8&m| |:: &7/&f" + commandLabel + " &7remove <&8playerName&7> <&8warpName&7> - Take access of your home away from a player."));
+					if (p.isOp()) {
+						help.addAll(Arrays.asList("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬", "&e&m| |:: &7/&f" + commandLabel + " &7reload - Reload configuration changes", "&e&m| |:: &7/&fgoto &7<playerName> <warpName> - Warp to a specified players home.", "&e&m| |:: &7/&fshowhomes &7<playerName> - List a specified players homes."));
+					}
 					PaginatedAssortment assortment = new PaginatedAssortment(p, help);
 					assortment.setListTitle("&3&oPrivate warp &f&lCOMMAND &3&ohelp. &8»");
 					assortment.setListBorder("&8&m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
@@ -156,7 +162,7 @@ public class CommandGo extends BukkitCommand {
 				} catch (NullPointerException e) {
 					try {
 						if (PrivateWarp.ownedHomeNames(p.getUniqueId()).size() >= PrivateWarp.maxWarps(p)) {
-							p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYour max home limit has been reached. Current: &f" + PrivateWarp.ownedHomeNames(p.getUniqueId()).size(), ColoredString.ColorType.HEX).toString());
+							p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oYour max home limit has been reached. Current: &f" + PrivateWarp.ownedHomeNames(p.getUniqueId()).size(), ColoredString.ColorType.HEX).toString());
 							return true;
 						}
 						new PrivateWarp(args[1], p.getUniqueId(), HUID.randomID()).create();
@@ -166,10 +172,10 @@ public class CommandGo extends BukkitCommand {
 					}
 					return true;
 				}
-				p.sendMessage(HempfestWarps.getPrefix()+ " " +  String.format(HempfestWarps.getString("private-set"), args[1]));
+				p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-set"), args[1]));
 				try {
 					if (PrivateWarp.ownedHomeNames(p.getUniqueId()).size() >= PrivateWarp.maxWarps(p)) {
-						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYour max home limit has been reached. Current: &f" + PrivateWarp.maxWarps(p), ColoredString.ColorType.HEX).toString());
+						p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oYour max home limit has been reached. Current: &f" + PrivateWarp.maxWarps(p), ColoredString.ColorType.HEX).toString());
 						return true;
 					}
 					new PrivateWarp(args[1], p.getUniqueId(), HUID.randomID()).create();
@@ -189,7 +195,7 @@ public class CommandGo extends BukkitCommand {
 					return true;
 				}
 				new PrivateWarp(args[1], p.getUniqueId()).delete();
-				p.sendMessage(HempfestWarps.getPrefix()+ " " +  String.format(HempfestWarps.getString("private-deleted"), args[1]));
+				p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-deleted"), args[1]));
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("list")) {
@@ -202,9 +208,9 @@ public class CommandGo extends BukkitCommand {
 				}
 				try {
 					HomeInheritance hi = (HomeInheritance) new HFEncoded(main.getConfig().getString("Shared." + home.getId())).deserialized();
-					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&6&oCurrent users you share &f&l" + warp + " &6&owith: &r&o" + hi.getUsers().toString(), ColoredString.ColorType.HEX).toString());
+					p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&6&oCurrent users you share &f&l" + warp + " &6&owith: &r&o" + hi.getUsers().toString(), ColoredString.ColorType.HEX).toString());
 				} catch (NullPointerException | IOException | ClassNotFoundException e) {
-					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYou either &fA. &c&odon't own this warp &fB. &c&owarp doesn't exist or &fC. &c&oYou don't share it.", ColoredString.ColorType.HEX).toString());
+					p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oYou either &fA. &c&odon't own this warp &fB. &c&owarp doesn't exist or &fC. &c&oYou don't share it.", ColoredString.ColorType.HEX).toString());
 				}
 			}
 			return true;
@@ -223,7 +229,7 @@ public class CommandGo extends BukkitCommand {
 					}
 					HomeInheritance hi = (HomeInheritance) new HFEncoded(main.getConfig().getString("Shared." + home.getId())).deserialized();
 					if (hi.getUsers().contains(player)) {
-						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&a&oPlayer already has access to this warp.", ColoredString.ColorType.HEX).toString());
+						p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&a&oPlayer already has access to this warp.", ColoredString.ColorType.HEX).toString());
 						return true;
 					}
 					OfflinePlayer target = getUser(player);
@@ -240,7 +246,7 @@ public class CommandGo extends BukkitCommand {
 						}, 1);
 						p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-shared"), warp, player));
 					} else {
-						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
+						p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
 					}
 				} catch (NullPointerException | IOException | ClassNotFoundException e) {
 					try {
@@ -259,7 +265,7 @@ public class CommandGo extends BukkitCommand {
 							}, 1);
 							p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-shared"), warp, player));
 						} else {
-							p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
+							p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
 						}
 					} catch (IOException | ClassNotFoundException ioException) {
 						ioException.printStackTrace();
@@ -279,7 +285,7 @@ public class CommandGo extends BukkitCommand {
 					}
 					HomeInheritance hi = (HomeInheritance) new HFEncoded(main.getConfig().getString("Shared." + home.getId())).deserialized();
 					if (!hi.getUsers().contains(player)) {
-						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oThis player does not currently share this warp.", ColoredString.ColorType.HEX).toString());
+						p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oThis player does not currently share this warp.", ColoredString.ColorType.HEX).toString());
 
 						return true;
 					}
@@ -298,10 +304,10 @@ public class CommandGo extends BukkitCommand {
 						}, 1);
 						p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-taken"), warp, player));
 					} else {
-						p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
+						p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oTarget not found.", ColoredString.ColorType.HEX).toString());
 					}
 				} catch (NullPointerException | IOException | ClassNotFoundException e) {
-					p.sendMessage(HempfestWarps.getPrefix()+ " "  + new ColoredString("&c&oYou do not share this warp with anyone currently.", ColoredString.ColorType.HEX).toString());
+					p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&c&oYou do not share this warp with anyone currently.", ColoredString.ColorType.HEX).toString());
 				}
 				return true;
 			}
@@ -309,5 +315,5 @@ public class CommandGo extends BukkitCommand {
 		}
 		// unknown sub command
 		return true;
-		}
 	}
+}

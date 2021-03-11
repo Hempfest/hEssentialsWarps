@@ -52,7 +52,10 @@ Messages:
 
 Gui:
   ## Change the /go list gui menu title. (HEX SUPPORTED w/ & symbol)
-  private-list-title: '&5&oPrivate homes &f| &bClick to warp'
+  private-list-title: '&5&oPrivate homes &f| NOW:%s MAX:%s'
+
+  ## Change the /go list gui menu title. (HEX SUPPORTED w/ & symbol)
+  private-list-title-other: '&5&oPrivate homes &f| &bClick to warp'
 
   ## Change the icon type representing the players private homes. (Must represent a minecraft:tag item excluding the prefix)
   private-list-icon: gravel

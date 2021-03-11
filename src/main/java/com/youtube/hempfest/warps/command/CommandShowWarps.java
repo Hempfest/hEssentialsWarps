@@ -1,9 +1,7 @@
 package com.youtube.hempfest.warps.command;
 
-import com.github.sanctum.labyrinth.Labyrinth;
-import com.github.sanctum.labyrinth.gui.GuiLibrary;
 import com.youtube.hempfest.warps.PrivateWarp;
-import com.youtube.hempfest.warps.gui.InventoryHomesOther;
+import com.youtube.hempfest.warps.gui.GUI;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -40,7 +38,6 @@ public class CommandShowWarps extends BukkitCommand {
 		}
 
 		if (length == 1) {
-			GuiLibrary lib = Labyrinth.guiManager(p);
 			OfflinePlayer target = null;
 			for (String play : PrivateWarp.allPlayers()) {
 				if (Bukkit.getOfflinePlayer(UUID.fromString(play)).getName().equals(args[0])) {
@@ -49,11 +46,10 @@ public class CommandShowWarps extends BukkitCommand {
 				}
 			}
 			if (target == null) {
-
+				// player not found
 				return true;
 			}
-			lib.setData(target.getUniqueId().toString());
-			new InventoryHomesOther(lib).open();
+			GUI.select(GUI.MenuType.HOMES_OTHER, target.getUniqueId()).open(p);
 			return true;
 		}
 
