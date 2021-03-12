@@ -4,10 +4,12 @@ import com.github.sanctum.labyrinth.formatting.string.ColoredString;
 import com.github.sanctum.labyrinth.formatting.string.PaginatedAssortment;
 import com.github.sanctum.labyrinth.library.HFEncoded;
 import com.github.sanctum.labyrinth.library.HUID;
+import com.github.sanctum.labyrinth.library.StringUtils;
 import com.youtube.hempfest.warps.HempfestWarps;
+import com.youtube.hempfest.warps.MovementCancellation;
 import com.youtube.hempfest.warps.PrivateWarp;
 import com.youtube.hempfest.warps.gui.GUI;
-import com.youtube.hempfest.warps.structure.Warp;
+import com.youtube.hempfest.warps.structure.WarpType;
 import com.youtube.hempfest.warps.system.Config;
 import com.youtube.hempfest.warps.system.HomeInheritance;
 import java.io.IOException;
@@ -20,6 +22,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.Inventory;
 
 public class CommandGo extends BukkitCommand {
 
@@ -61,6 +65,7 @@ public class CommandGo extends BukkitCommand {
 			assortment.setLinesPerPage(7);
 			assortment.setNavigateCommand("go help");
 			assortment.export(1);
+
 			return true;
 		}
 
@@ -69,7 +74,20 @@ public class CommandGo extends BukkitCommand {
 				if (p.hasPermission("hwarps.reload")) {
 					Config main = Config.get("Config", "Configuration");
 					main.reload();
+					main.flush();
 					p.sendMessage(HempfestWarps.getPrefix() + " " + new ColoredString("&b&oConfiguration v&f" + main.getConfig().getString("Version") + " &b&oreloaded.", ColoredString.ColorType.HEX).toString());
+					if (HempfestWarps.getBoolean("cancel-teleport")) {
+						if (HempfestWarps.getInstance().cancellation == null) {
+							Bukkit.getPluginManager().registerEvents(HempfestWarps.getInstance().cancellation = new MovementCancellation(), HempfestWarps.getInstance());
+							p.sendMessage(HempfestWarps.getPrefix() + StringUtils.translate(" &b&oTeleportation cancellation is now in effect."));
+						}
+					} else {
+						if (HempfestWarps.getInstance().cancellation != null) {
+							HandlerList.unregisterAll(HempfestWarps.getInstance().cancellation);
+							HempfestWarps.getInstance().cancellation = null;
+							p.sendMessage(HempfestWarps.getPrefix() + StringUtils.translate(" &3&oTeleportation cancellation is no longer in effect."));
+						}
+					}
 					return true;
 				}
 				return false;
@@ -104,25 +122,17 @@ public class CommandGo extends BukkitCommand {
 			}
 			try {
 				if (PrivateWarp.sharedHomeNames(p.getUniqueId()).contains(args[0])) {
-					p.teleport(warp.getSharedLocation());
+					warp.teleport(p, WarpType.PRIVATE, args[0], warp.getSharedLocation());
 				} else {
-					p.teleport(((Warp) warp).getLocation());
+					warp.teleport(p, WarpType.PRIVATE, args[0], warp.getLocation());
 				}
 			} catch (NullPointerException | IOException | ClassNotFoundException e) {
 				try {
-					p.teleport(((Warp) warp).getLocation());
+					warp.teleport(p, WarpType.PRIVATE, args[0], warp.getLocation());
 				} catch (IOException | ClassNotFoundException ioException) {
 					ioException.printStackTrace();
 				}
 			}
-			try {
-				if (p.isOp()) {
-					p.sendMessage(((Warp) warp).getId().toString() + " Is this warps special ID.");
-				}
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			p.sendMessage(HempfestWarps.getPrefix() + " " + String.format(HempfestWarps.getString("private-teleport"), args[0]));
 
 			return true;
 		}

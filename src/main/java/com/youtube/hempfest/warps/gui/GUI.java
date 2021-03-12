@@ -1,5 +1,6 @@
 package com.youtube.hempfest.warps.gui;
 
+import com.github.sanctum.labyrinth.gui.builder.InventoryRows;
 import com.github.sanctum.labyrinth.gui.builder.PaginatedBuilder;
 import com.github.sanctum.labyrinth.gui.builder.PaginatedClick;
 import com.github.sanctum.labyrinth.gui.builder.PaginatedClose;
@@ -73,7 +74,7 @@ public class GUI {
 			} catch (NullPointerException ignored) {
 			}
 		}
-		PaginatedBuilder builder = null;
+		PaginatedBuilder builder;
 		switch (type) {
 
 			case HOMES:
@@ -82,9 +83,10 @@ public class GUI {
 						.setTitle(StringUtils.translate(String.format(HempfestWarps.getGuiString("private-list-title"), (PrivateWarp.ownedHomeNames(id).size()), PrivateWarp.maxWarps(Bukkit.getPlayer(id)))))
 						.setAlreadyFirst(HempfestWarps.getPrefix() + StringUtils.translate(" &cYou are on the first page of warps"))
 						.setAlreadyLast(HempfestWarps.getPrefix() + StringUtils.translate(" &cYou don't have any more warps to view."))
-						.setNavigationLeft(getLeft(), 48, PaginatedClick::sync)
-						.setNavigationRight(getRight(), 50, PaginatedClick::sync)
-						.setNavigationBack(getBack(), 49, click -> click.getPlayer().closeInventory())
+						.setNavigationLeft(getLeft(), HempfestWarps.getLeft(), PaginatedClick::sync)
+						.setNavigationRight(getRight(), HempfestWarps.getRight(), PaginatedClick::sync)
+						.setNavigationBack(getBack(), HempfestWarps.getBack(), click -> click.getPlayer().closeInventory())
+						.setSize(HempfestWarps.getRows())
 						.setCloseAction(PaginatedClose::clear)
 						.setupProcess(element -> element.applyLogic(e -> {
 							if (GUI.getId(MenuType.HOMES).equals(e.getId())) {
@@ -106,15 +108,26 @@ public class GUI {
 								e.action().setClick(click -> {
 									String home = click.getClickedItem().getItemMeta().getPersistentDataContainer().get(GUI.getKey(), PersistentDataType.STRING);
 									Bukkit.dispatchCommand(click.getPlayer(), "go " + home);
+									click.getPlayer().closeInventory();
 								});
 							}
 						}))
+						.newItem()
+						.invoke(() -> {
+							ItemStack i = new ItemStack(Material.TOTEM_OF_UNDYING);
+							ItemMeta meta = i.getItemMeta();
+							meta.setDisplayName(StringUtils.translate("&aPublic warps"));
+							meta.setLore(Arrays.asList("", StringUtils.translate("&oClick to view all public warps.")));
+							i.setItemMeta(meta);
+							return i;
+						}, HempfestWarps.getSwitch(), click -> select(MenuType.WARPS).open(click.getPlayer()))
+						.add()
 						.addBorder()
 						.setBorderType(Material.GRAY_STAINED_GLASS_PANE)
 						.setFillType(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
 						.fill()
 						.collect(new LinkedList<>(append))
-						.limit(28);
+						.limit(HempfestWarps.getAmntPer());
 				break;
 
 			case HOMES_OTHER:
@@ -124,9 +137,10 @@ public class GUI {
 						.setTitle(StringUtils.translate(HempfestWarps.getGuiString("private-list-title-other").replace("{OWNER}", Objects.requireNonNull(Bukkit.getOfflinePlayer(id).getName()))))
 						.setAlreadyFirst(HempfestWarps.getPrefix() + StringUtils.translate(" &cYou are on the first page of warps"))
 						.setAlreadyLast(HempfestWarps.getPrefix() + StringUtils.translate(" &c" + Bukkit.getOfflinePlayer(id).getName() + " doesn't have any more warps to view."))
-						.setNavigationLeft(getLeft(), 48, PaginatedClick::sync)
-						.setNavigationRight(getRight(), 50, PaginatedClick::sync)
-						.setNavigationBack(getBack(), 49, click -> click.getPlayer().closeInventory())
+						.setNavigationLeft(getLeft(), HempfestWarps.getLeft(), PaginatedClick::sync)
+						.setNavigationRight(getRight(), HempfestWarps.getRight(), PaginatedClick::sync)
+						.setNavigationBack(getBack(), HempfestWarps.getBack(), click -> click.getPlayer().closeInventory())
+						.setSize(HempfestWarps.getRows())
 						.setCloseAction(PaginatedClose::clear)
 						.setupProcess(element -> element.applyLogic(e -> {
 							if (GUI.getId(MenuType.HOMES_OTHER).equals(e.getId())) {
@@ -148,6 +162,7 @@ public class GUI {
 								e.action().setClick(click -> {
 									String home = click.getClickedItem().getItemMeta().getPersistentDataContainer().get(GUI.getKey(), PersistentDataType.STRING);
 									Bukkit.dispatchCommand(click.getPlayer(), "goto " + Bukkit.getOfflinePlayer(finalId).getName() + " " + home);
+									click.getPlayer().closeInventory();
 								});
 							}
 						}))
@@ -156,16 +171,17 @@ public class GUI {
 						.setFillType(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
 						.fill()
 						.collect(new LinkedList<>(append))
-						.limit(28);
+						.limit(7);
 				break;
 			case WARPS:
 				builder = new PaginatedBuilder(HempfestWarps.getInstance())
 						.setTitle(StringUtils.translate(HempfestWarps.getGuiString("public-list-title")))
 						.setAlreadyFirst(HempfestWarps.getPrefix() + StringUtils.translate(" &cYou are on the first page of warps"))
 						.setAlreadyLast(HempfestWarps.getPrefix() + StringUtils.translate(" &cThere are no more public warps to view."))
-						.setNavigationLeft(getLeft(), 48, PaginatedClick::sync)
-						.setNavigationRight(getRight(), 50, PaginatedClick::sync)
-						.setNavigationBack(getBack(), 49, click -> click.getPlayer().closeInventory())
+						.setNavigationLeft(getLeft(), HempfestWarps.getLeft(), PaginatedClick::sync)
+						.setNavigationRight(getRight(), HempfestWarps.getRight(), PaginatedClick::sync)
+						.setNavigationBack(getBack(), HempfestWarps.getBack(), click -> click.getPlayer().closeInventory())
+						.setSize(HempfestWarps.getRows())
 						.setCloseAction(PaginatedClose::clear)
 						.setupProcess(element -> element.applyLogic(e -> {
 							if (GUI.getId(MenuType.WARPS).equals(e.getId())) {
@@ -187,15 +203,26 @@ public class GUI {
 								e.action().setClick(click -> {
 									String warp = click.getClickedItem().getItemMeta().getPersistentDataContainer().get(GUI.getKey(), PersistentDataType.STRING);
 									Bukkit.dispatchCommand(click.getPlayer(), "warp " + warp);
+									click.getPlayer().closeInventory();
 								});
 							}
 						}))
+						.newItem()
+						.invoke(() -> {
+							ItemStack i = new ItemStack(Material.TOTEM_OF_UNDYING);
+							ItemMeta meta = i.getItemMeta();
+							meta.setDisplayName(StringUtils.translate("&3Private warps"));
+							meta.setLore(Arrays.asList("", StringUtils.translate("&oClick to view your private warps.")));
+							i.setItemMeta(meta);
+							return i;
+						}, HempfestWarps.getSwitch(), click -> select(MenuType.HOMES, click.getPlayer().getUniqueId()).open(click.getPlayer()))
+						.add()
 						.addBorder()
 						.setBorderType(Material.GRAY_STAINED_GLASS_PANE)
 						.setFillType(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
 						.fill()
 						.collect(new LinkedList<>(PublicWarp.allWarps()))
-						.limit(28);
+						.limit(HempfestWarps.getAmntPer());
 				break;
 			default:
 				throw new IllegalStateException("Unexpected menu type: " + type);

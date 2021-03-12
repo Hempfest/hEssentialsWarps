@@ -22,7 +22,7 @@ public class PrivateWarp implements Warp {
 
 	private final String warpName;
 
-	public PrivateWarp (String warpName, UUID ownerID) {
+	public PrivateWarp(String warpName, UUID ownerID) {
 		this.warpName = warpName;
 		this.ownerID = ownerID;
 	}
@@ -95,7 +95,7 @@ public class PrivateWarp implements Warp {
 		Config main = Config.get(playerId.toString(), "Private");
 		List<String> array = new ArrayList<>();
 		for (String o : main.getConfig().getConfigurationSection("Owned").getKeys(false)) {
-			if(!array.contains(o)) {
+			if (!array.contains(o)) {
 				array.add(o);
 			}
 		}
@@ -107,7 +107,7 @@ public class PrivateWarp implements Warp {
 		List<String> array = new ArrayList<>();
 		for (String o : main.getConfig().getConfigurationSection("Shared").getKeys(false)) {
 			if (main.getConfig().isConfigurationSection("Shared." + o)) {
-				if(!array.contains(o)) {
+				if (!array.contains(o)) {
 					array.add(o);
 				}
 			}

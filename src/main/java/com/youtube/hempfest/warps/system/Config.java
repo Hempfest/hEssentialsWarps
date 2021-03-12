@@ -109,7 +109,12 @@ public class Config {
         return d;
     }
 
+    public void flush() {
+        configs.removeIf(c -> c.getName().equals(getName()));
+    }
+
     public void reload() {
+        flush();
         this.file = new File(getDataFolder(), getName() + ".yml");
         if (!this.file.exists())
             try {
@@ -121,7 +126,6 @@ public class Config {
         File defConfigStream = new File(getDataFolder(), getName() + ".yml");
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         this.fc.setDefaults(defConfig);
-        configs.removeIf(c -> c.equals(this));
     }
 
     public void saveConfig() {
@@ -138,9 +142,7 @@ public class Config {
         if (!(o instanceof Config)) return false;
         Config config = (Config) o;
         return n.equals(config.n) &&
-                d.equals(config.d) &&
-                Objects.equals(fc, config.fc) &&
-                Objects.equals(getFile(), config.getFile());
+                d.equals(config.d);
     }
 
     @Override

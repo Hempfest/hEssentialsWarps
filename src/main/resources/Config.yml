@@ -12,6 +12,12 @@
 Options:
   ## Change the prefix used for all responses.
   prefix: '&8(&f&lGO&8)'
+  ## The radius of blocks to check for players in.
+  teleport-distance: 30
+  ## The amount of time to wait to teleport in seconds if a player is near by
+  teleport-delay: 10
+  ## When a player moves during a pending teleport the teleport will be cancelled;
+  cancel-teleport: true
 
 Messages:
   ## Change the warp message for /warp
@@ -51,6 +57,10 @@ Messages:
   private-not-found: '&c&oWarp &f&l%s &c&onot found.'
 
 Gui:
+  ## How many rows will be displayed for the menu?
+  ## All valid types: [ ONE, TWO, THREE, FOUR, FIVE, SIX ]
+  menu-rows: THREE
+
   ## Change the /go list gui menu title. (HEX SUPPORTED w/ & symbol)
   private-list-title: '&5&oPrivate homes &f| NOW:%s MAX:%s'
 
